@@ -150,7 +150,7 @@ function serve(request)
   for i, ndss in ipairs(netdevsubstat) do
     print_metric_type("node_network_" .. ndss, "gauge")
     for ii, d in ipairs(devs) do
-      print_metric("device=" .. d, nds_table[d][i])
+      print_metric('device="' .. d .. '"', nds_table[d][i])
     end
   end
 
