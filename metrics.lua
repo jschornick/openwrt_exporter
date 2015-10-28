@@ -5,16 +5,13 @@
 
 socket = require("socket")
 netsubstat = {"IcmpMsg", "Icmp", "IpExt", "Ip", "TcpExt", "Tcp", "UdpLite", "Udp"}
-table.sort(netsubstat)
 cpu_mode = {"user", "nice", "system", "idle", "iowait", "irq",
             "softirq", "steal", "guest", "guest_nice"}
-table.sort(cpu_mode)
 netdevsubstat = {"receive_bytes", "receive_packets", "receive_errs",
                  "receive_drop", "receive_fifo", "receive_frame", "receive_compressed",
                  "receive_multicast", "transmit_bytes", "transmit_packets",
                  "transmit_errs", "transmit_drop", "transmit_fifo", "transmit_colls",
                  "transmit_carrier", "transmit_compressed"}
-table.sort(netdevsubstat)
 
 function space_split(s)
   elements = {}
@@ -80,13 +77,11 @@ function serve(request)
   local loadavg = space_split(get_contents("/proc/loadavg"))
   local meminfo = line_split(get_contents(
                     "/proc/meminfo"):gsub("[):]", ""):gsub("[(]", "_"))
-  table.sort(meminfo)
   local netstat = get_contents("/proc/net/netstats") .. get_contents("/proc/net/snmp")
   local netdevstat = line_split(get_contents("/proc/net/dev"))
   for i, line in ipairs(netdevstat) do
     netdevstat[i] = string.match(netdevstat[i], "%S.*")
   end
-  table.sort(netdevstat)
 
   print_metric_type("node_boot_time", "gauge")
   print_metric(nil, string.match(stat, "btime ([0-9]+)"))
@@ -98,7 +93,7 @@ function serve(request)
     cpu = space_split(string.match(stat, string.format("cpu%d ([0-9 ]+)", i)))
     local label = string.format('cpu="cpu%d",mode="%%s"', i)
     for ii, mode in ipairs(cpu_mode) do
-      print_metric(string.format(label, mode), cpu[ii])
+      print_metric(string.format(label, mode), cpu[ii] / 100)
     end
     i = i + 1
   end
@@ -129,7 +124,6 @@ function serve(request)
     local substat_s = string.match(netstat, nss .. ": ([A-Z][A-Za-z0-9 ]+)")
     if substat_s then
       local substat = space_split(substat_s)
-      table.sort(substat)
       local substatv = space_split(string.match(netstat, nss .. ": ([0-9 -]+)"))
       for ii, ss in ipairs(substat) do
         print_metric_type("node_netstat_" .. nss .. "_" .. ss, "gauge")
@@ -146,7 +140,6 @@ function serve(request)
       table.insert(devs, dev)
     end
   end
-  table.sort(devs)
   for i, ndss in ipairs(netdevsubstat) do
     print_metric_type("node_network_" .. ndss, "gauge")
     for ii, d in ipairs(devs) do

@@ -1,374 +1,374 @@
 # TYPE node_boot_time gauge
 node_boot_time 1.44566e+09
 # TYPE node_context_switches counter
-node_context_switches 5.40543e+07
+node_context_switches 5.45431e+07
 # TYPE node_cpu counter
-node_cpu{cpu="cpu0",mode="guest"} 66483
-node_cpu{cpu="cpu0",mode="guest_nice"} 0
-node_cpu{cpu="cpu0",mode="idle"} 82352
-node_cpu{cpu="cpu0",mode="iowait"} 3.93856e+07
-node_cpu{cpu="cpu0",mode="irq"} 233
+node_cpu{cpu="cpu0",mode="user"} 682.58
 node_cpu{cpu="cpu0",mode="nice"} 0
-node_cpu{cpu="cpu0",mode="softirq"} 340615
+node_cpu{cpu="cpu0",mode="system"} 832.19
+node_cpu{cpu="cpu0",mode="idle"} 397411
+node_cpu{cpu="cpu0",mode="iowait"} 2.33
+node_cpu{cpu="cpu0",mode="irq"} 0
+node_cpu{cpu="cpu0",mode="softirq"} 3427.71
 node_cpu{cpu="cpu0",mode="steal"} 0
-node_cpu{cpu="cpu0",mode="system"} 0
-node_cpu{cpu="cpu0",mode="user"} 0
+node_cpu{cpu="cpu0",mode="guest"} 0
+node_cpu{cpu="cpu0",mode="guest_nice"} 0
 # TYPE node_filefd_allocated gauge
-node_filefd_allocated 197
+node_filefd_allocated 198
 # TYPE node_filefd_maximum gauge
 node_filefd_maximum 8192
 # TYPE node_forks counter
-node_forks 25635
+node_forks 25944
 # TYPE node_intr counter
-node_intr 1.05762e+08
+node_intr 1.06594e+08
 # TYPE node_load1 gauge
-node_load1 0
+node_load1 0.02
 # TYPE node_load15 gauge
 node_load15 0.05
 # TYPE node_load5 gauge
-node_load5 0.01
-# TYPE node_memory_Active gauge
-node_memory_Active 1.24396e+07
-# TYPE node_memory_Active_anon gauge
-node_memory_Active_anon 4.10419e+06
-# TYPE node_memory_Active_file gauge
-node_memory_Active_file 8.33536e+06
-# TYPE node_memory_AnonPages gauge
-node_memory_AnonPages 2.08077e+06
-# TYPE node_memory_Bounce gauge
-node_memory_Bounce 0
+node_load5 0.04
+# TYPE node_memory_MemTotal gauge
+node_memory_MemTotal 2.99213e+07
+# TYPE node_memory_MemFree gauge
+node_memory_MemFree 3.19898e+06
 # TYPE node_memory_Buffers gauge
 node_memory_Buffers 520192
 # TYPE node_memory_Cached gauge
-node_memory_Cached 1.11698e+07
-# TYPE node_memory_CommitLimit gauge
-node_memory_CommitLimit 1.49586e+07
-# TYPE node_memory_Committed_AS gauge
-node_memory_Committed_AS 7.73325e+06
-# TYPE node_memory_Dirty gauge
-node_memory_Dirty 0
+node_memory_Cached 1.11739e+07
+# TYPE node_memory_SwapCached gauge
+node_memory_SwapCached 0
+# TYPE node_memory_Active gauge
+node_memory_Active 1.24396e+07
 # TYPE node_memory_Inactive gauge
-node_memory_Inactive 1.3312e+06
+node_memory_Inactive 1.3271e+06
+# TYPE node_memory_Active_anon gauge
+node_memory_Active_anon 4.096e+06
 # TYPE node_memory_Inactive_anon gauge
 node_memory_Inactive_anon 77824
+# TYPE node_memory_Active_file gauge
+node_memory_Active_file 8.34355e+06
 # TYPE node_memory_Inactive_file gauge
-node_memory_Inactive_file 1.25338e+06
-# TYPE node_memory_KernelStack gauge
-node_memory_KernelStack 475136
-# TYPE node_memory_Mapped gauge
-node_memory_Mapped 1.62202e+06
-# TYPE node_memory_MemFree gauge
-node_memory_MemFree 3.1785e+06
-# TYPE node_memory_MemTotal gauge
-node_memory_MemTotal 2.99213e+07
+node_memory_Inactive_file 1.24928e+06
+# TYPE node_memory_Unevictable gauge
+node_memory_Unevictable 0
 # TYPE node_memory_Mlocked gauge
 node_memory_Mlocked 0
-# TYPE node_memory_NFS_Unstable gauge
-node_memory_NFS_Unstable 0
-# TYPE node_memory_PageTables gauge
-node_memory_PageTables 323584
-# TYPE node_memory_SReclaimable gauge
-node_memory_SReclaimable 2.03981e+06
-# TYPE node_memory_SUnreclaim gauge
-node_memory_SUnreclaim 5.78355e+06
+# TYPE node_memory_SwapTotal gauge
+node_memory_SwapTotal 0
+# TYPE node_memory_SwapFree gauge
+node_memory_SwapFree 0
+# TYPE node_memory_Dirty gauge
+node_memory_Dirty 0
+# TYPE node_memory_Writeback gauge
+node_memory_Writeback 0
+# TYPE node_memory_AnonPages gauge
+node_memory_AnonPages 2.07258e+06
+# TYPE node_memory_Mapped gauge
+node_memory_Mapped 1.62202e+06
 # TYPE node_memory_Shmem gauge
 node_memory_Shmem 2.10125e+06
 # TYPE node_memory_Slab gauge
-node_memory_Slab 7.82336e+06
-# TYPE node_memory_SwapCached gauge
-node_memory_SwapCached 0
-# TYPE node_memory_SwapFree gauge
-node_memory_SwapFree 0
-# TYPE node_memory_SwapTotal gauge
-node_memory_SwapTotal 0
-# TYPE node_memory_Unevictable gauge
-node_memory_Unevictable 0
-# TYPE node_memory_VmallocChunk gauge
-node_memory_VmallocChunk 1.05242e+09
+node_memory_Slab 7.80288e+06
+# TYPE node_memory_SReclaimable gauge
+node_memory_SReclaimable 2.03981e+06
+# TYPE node_memory_SUnreclaim gauge
+node_memory_SUnreclaim 5.76307e+06
+# TYPE node_memory_KernelStack gauge
+node_memory_KernelStack 483328
+# TYPE node_memory_PageTables gauge
+node_memory_PageTables 315392
+# TYPE node_memory_NFS_Unstable gauge
+node_memory_NFS_Unstable 0
+# TYPE node_memory_Bounce gauge
+node_memory_Bounce 0
+# TYPE node_memory_WritebackTmp gauge
+node_memory_WritebackTmp 0
+# TYPE node_memory_CommitLimit gauge
+node_memory_CommitLimit 1.49586e+07
+# TYPE node_memory_Committed_AS gauge
+node_memory_Committed_AS 7.72506e+06
 # TYPE node_memory_VmallocTotal gauge
 node_memory_VmallocTotal 1.07353e+09
 # TYPE node_memory_VmallocUsed gauge
 node_memory_VmallocUsed 1.29434e+06
-# TYPE node_memory_Writeback gauge
-node_memory_Writeback 0
-# TYPE node_memory_WritebackTmp gauge
-node_memory_WritebackTmp 0
-# TYPE node_netstat_Icmp_InAddrMaskReps gauge
-node_netstat_Icmp_InAddrMaskReps 33958
-# TYPE node_netstat_Icmp_InAddrMasks gauge
-node_netstat_Icmp_InAddrMasks 39
-# TYPE node_netstat_Icmp_InDestUnreachs gauge
-node_netstat_Icmp_InDestUnreachs 33209
-# TYPE node_netstat_Icmp_InEchoReps gauge
-node_netstat_Icmp_InEchoReps 3
-# TYPE node_netstat_Icmp_InEchos gauge
-node_netstat_Icmp_InEchos 0
-# TYPE node_netstat_Icmp_InErrors gauge
-node_netstat_Icmp_InErrors 0
-# TYPE node_netstat_Icmp_InMsgs gauge
-node_netstat_Icmp_InMsgs 0
-# TYPE node_netstat_Icmp_InParmProbs gauge
-node_netstat_Icmp_InParmProbs 741
-# TYPE node_netstat_Icmp_InRedirects gauge
-node_netstat_Icmp_InRedirects 5
-# TYPE node_netstat_Icmp_InSrcQuenchs gauge
-node_netstat_Icmp_InSrcQuenchs 0
-# TYPE node_netstat_Icmp_InTimeExcds gauge
-node_netstat_Icmp_InTimeExcds 0
-# TYPE node_netstat_Icmp_InTimestampReps gauge
-node_netstat_Icmp_InTimestampReps 0
-# TYPE node_netstat_Icmp_InTimestamps gauge
-node_netstat_Icmp_InTimestamps 0
-# TYPE node_netstat_Icmp_OutAddrMaskReps gauge
-node_netstat_Icmp_OutAddrMaskReps 175344
-# TYPE node_netstat_Icmp_OutAddrMasks gauge
-node_netstat_Icmp_OutAddrMasks 0
-# TYPE node_netstat_Icmp_OutDestUnreachs gauge
-node_netstat_Icmp_OutDestUnreachs 145085
-# TYPE node_netstat_Icmp_OutEchoReps gauge
-node_netstat_Icmp_OutEchoReps 77
-# TYPE node_netstat_Icmp_OutEchos gauge
-node_netstat_Icmp_OutEchos 0
-# TYPE node_netstat_Icmp_OutErrors gauge
-node_netstat_Icmp_OutErrors 0
-# TYPE node_netstat_Icmp_OutMsgs gauge
-node_netstat_Icmp_OutMsgs 29418
-# TYPE node_netstat_Icmp_OutParmProbs gauge
-node_netstat_Icmp_OutParmProbs 23
-# TYPE node_netstat_Icmp_OutRedirects gauge
-node_netstat_Icmp_OutRedirects 741
-# TYPE node_netstat_Icmp_OutSrcQuenchs gauge
-node_netstat_Icmp_OutSrcQuenchs 0
-# TYPE node_netstat_Icmp_OutTimeExcds gauge
-node_netstat_Icmp_OutTimeExcds 0
-# TYPE node_netstat_Icmp_OutTimestampReps gauge
-node_netstat_Icmp_OutTimestampReps 0
-# TYPE node_netstat_Icmp_OutTimestamps gauge
-node_netstat_Icmp_OutTimestamps 0
+# TYPE node_memory_VmallocChunk gauge
+node_memory_VmallocChunk 1.05242e+09
 # TYPE node_netstat_IcmpMsg_InType0 gauge
 node_netstat_IcmpMsg_InType0 5
-# TYPE node_netstat_IcmpMsg_InType11 gauge
-node_netstat_IcmpMsg_InType11 33209
 # TYPE node_netstat_IcmpMsg_InType3 gauge
-node_netstat_IcmpMsg_InType3 741
+node_netstat_IcmpMsg_InType3 33211
 # TYPE node_netstat_IcmpMsg_InType8 gauge
-node_netstat_IcmpMsg_InType8 3
+node_netstat_IcmpMsg_InType8 742
+# TYPE node_netstat_IcmpMsg_InType11 gauge
+node_netstat_IcmpMsg_InType11 3
 # TYPE node_netstat_IcmpMsg_OutType0 gauge
-node_netstat_IcmpMsg_OutType0 741
-# TYPE node_netstat_IcmpMsg_OutType11 gauge
-node_netstat_IcmpMsg_OutType11 145085
+node_netstat_IcmpMsg_OutType0 742
 # TYPE node_netstat_IcmpMsg_OutType3 gauge
-node_netstat_IcmpMsg_OutType3 29418
+node_netstat_IcmpMsg_OutType3 145828
 # TYPE node_netstat_IcmpMsg_OutType5 gauge
-node_netstat_IcmpMsg_OutType5 23
+node_netstat_IcmpMsg_OutType5 29931
 # TYPE node_netstat_IcmpMsg_OutType8 gauge
-node_netstat_IcmpMsg_OutType8 77
-# TYPE node_netstat_Ip_DefaultTTL gauge
-node_netstat_Ip_DefaultTTL 1
-# TYPE node_netstat_Ip_ForwDatagrams gauge
-node_netstat_Ip_ForwDatagrams 64
+node_netstat_IcmpMsg_OutType8 23
+# TYPE node_netstat_IcmpMsg_OutType11 gauge
+node_netstat_IcmpMsg_OutType11 77
+# TYPE node_netstat_Icmp_InMsgs gauge
+node_netstat_Icmp_InMsgs 33961
+# TYPE node_netstat_Icmp_InErrors gauge
+node_netstat_Icmp_InErrors 39
+# TYPE node_netstat_Icmp_InDestUnreachs gauge
+node_netstat_Icmp_InDestUnreachs 33211
+# TYPE node_netstat_Icmp_InTimeExcds gauge
+node_netstat_Icmp_InTimeExcds 3
+# TYPE node_netstat_Icmp_InParmProbs gauge
+node_netstat_Icmp_InParmProbs 0
+# TYPE node_netstat_Icmp_InSrcQuenchs gauge
+node_netstat_Icmp_InSrcQuenchs 0
+# TYPE node_netstat_Icmp_InRedirects gauge
+node_netstat_Icmp_InRedirects 0
+# TYPE node_netstat_Icmp_InEchos gauge
+node_netstat_Icmp_InEchos 742
+# TYPE node_netstat_Icmp_InEchoReps gauge
+node_netstat_Icmp_InEchoReps 5
+# TYPE node_netstat_Icmp_InTimestamps gauge
+node_netstat_Icmp_InTimestamps 0
+# TYPE node_netstat_Icmp_InTimestampReps gauge
+node_netstat_Icmp_InTimestampReps 0
+# TYPE node_netstat_Icmp_InAddrMasks gauge
+node_netstat_Icmp_InAddrMasks 0
+# TYPE node_netstat_Icmp_InAddrMaskReps gauge
+node_netstat_Icmp_InAddrMaskReps 0
+# TYPE node_netstat_Icmp_OutMsgs gauge
+node_netstat_Icmp_OutMsgs 176601
+# TYPE node_netstat_Icmp_OutErrors gauge
+node_netstat_Icmp_OutErrors 0
+# TYPE node_netstat_Icmp_OutDestUnreachs gauge
+node_netstat_Icmp_OutDestUnreachs 145828
+# TYPE node_netstat_Icmp_OutTimeExcds gauge
+node_netstat_Icmp_OutTimeExcds 77
+# TYPE node_netstat_Icmp_OutParmProbs gauge
+node_netstat_Icmp_OutParmProbs 0
+# TYPE node_netstat_Icmp_OutSrcQuenchs gauge
+node_netstat_Icmp_OutSrcQuenchs 0
+# TYPE node_netstat_Icmp_OutRedirects gauge
+node_netstat_Icmp_OutRedirects 29931
+# TYPE node_netstat_Icmp_OutEchos gauge
+node_netstat_Icmp_OutEchos 23
+# TYPE node_netstat_Icmp_OutEchoReps gauge
+node_netstat_Icmp_OutEchoReps 742
+# TYPE node_netstat_Icmp_OutTimestamps gauge
+node_netstat_Icmp_OutTimestamps 0
+# TYPE node_netstat_Icmp_OutTimestampReps gauge
+node_netstat_Icmp_OutTimestampReps 0
+# TYPE node_netstat_Icmp_OutAddrMasks gauge
+node_netstat_Icmp_OutAddrMasks 0
+# TYPE node_netstat_Icmp_OutAddrMaskReps gauge
+node_netstat_Icmp_OutAddrMaskReps 0
 # TYPE node_netstat_Ip_Forwarding gauge
-node_netstat_Ip_Forwarding 4.93175e+07
-# TYPE node_netstat_Ip_FragCreates gauge
-node_netstat_Ip_FragCreates 78
-# TYPE node_netstat_Ip_FragFails gauge
-node_netstat_Ip_FragFails 49
-# TYPE node_netstat_Ip_FragOKs gauge
-node_netstat_Ip_FragOKs 4.56588e+07
-# TYPE node_netstat_Ip_InAddrErrors gauge
-node_netstat_Ip_InAddrErrors 0
-# TYPE node_netstat_Ip_InDelivers gauge
-node_netstat_Ip_InDelivers 0
-# TYPE node_netstat_Ip_InDiscards gauge
-node_netstat_Ip_InDiscards 693584
-# TYPE node_netstat_Ip_InHdrErrors gauge
-node_netstat_Ip_InHdrErrors 4.65413e+07
+node_netstat_Ip_Forwarding 1
+# TYPE node_netstat_Ip_DefaultTTL gauge
+node_netstat_Ip_DefaultTTL 64
 # TYPE node_netstat_Ip_InReceives gauge
-node_netstat_Ip_InReceives 29418
+node_netstat_Ip_InReceives 4.94927e+07
+# TYPE node_netstat_Ip_InHdrErrors gauge
+node_netstat_Ip_InHdrErrors 78
+# TYPE node_netstat_Ip_InAddrErrors gauge
+node_netstat_Ip_InAddrErrors 49
+# TYPE node_netstat_Ip_ForwDatagrams gauge
+node_netstat_Ip_ForwDatagrams 4.57965e+07
 # TYPE node_netstat_Ip_InUnknownProtos gauge
 node_netstat_Ip_InUnknownProtos 0
-# TYPE node_netstat_Ip_OutDiscards gauge
-node_netstat_Ip_OutDiscards 1
-# TYPE node_netstat_Ip_OutNoRoutes gauge
-node_netstat_Ip_OutNoRoutes 4.21363e+06
+# TYPE node_netstat_Ip_InDiscards gauge
+node_netstat_Ip_InDiscards 0
+# TYPE node_netstat_Ip_InDelivers gauge
+node_netstat_Ip_InDelivers 730434
 # TYPE node_netstat_Ip_OutRequests gauge
-node_netstat_Ip_OutRequests 1.40729e+06
+node_netstat_Ip_OutRequests 4.67162e+07
+# TYPE node_netstat_Ip_OutDiscards gauge
+node_netstat_Ip_OutDiscards 29931
+# TYPE node_netstat_Ip_OutNoRoutes gauge
+node_netstat_Ip_OutNoRoutes 0
+# TYPE node_netstat_Ip_ReasmTimeout gauge
+node_netstat_Ip_ReasmTimeout 1
+# TYPE node_netstat_Ip_ReasmReqds gauge
+node_netstat_Ip_ReasmReqds 4.21374e+06
+# TYPE node_netstat_Ip_ReasmOKs gauge
+node_netstat_Ip_ReasmOKs 1.40732e+06
 # TYPE node_netstat_Ip_ReasmFails gauge
 node_netstat_Ip_ReasmFails 1
-# TYPE node_netstat_Ip_ReasmOKs gauge
-node_netstat_Ip_ReasmOKs 1.48842e+06
-# TYPE node_netstat_Ip_ReasmReqds gauge
-node_netstat_Ip_ReasmReqds 28952
-# TYPE node_netstat_Ip_ReasmTimeout gauge
-node_netstat_Ip_ReasmTimeout 4.43955e+06
-# TYPE node_netstat_Tcp_ActiveOpens gauge
-node_netstat_Tcp_ActiveOpens 1
-# TYPE node_netstat_Tcp_AttemptFails gauge
-node_netstat_Tcp_AttemptFails 200
-# TYPE node_netstat_Tcp_CurrEstab gauge
-node_netstat_Tcp_CurrEstab 120000
-# TYPE node_netstat_Tcp_EstabResets gauge
-node_netstat_Tcp_EstabResets -1
-# TYPE node_netstat_Tcp_InErrs gauge
-node_netstat_Tcp_InErrs 7
-# TYPE node_netstat_Tcp_InSegs gauge
-node_netstat_Tcp_InSegs 13693
-# TYPE node_netstat_Tcp_MaxConn gauge
-node_netstat_Tcp_MaxConn 0
-# TYPE node_netstat_Tcp_OutRsts gauge
-node_netstat_Tcp_OutRsts 189
-# TYPE node_netstat_Tcp_OutSegs gauge
-node_netstat_Tcp_OutSegs 2
-# TYPE node_netstat_Tcp_PassiveOpens gauge
-node_netstat_Tcp_PassiveOpens 163775
-# TYPE node_netstat_Tcp_RetransSegs gauge
-node_netstat_Tcp_RetransSegs 175629
+# TYPE node_netstat_Ip_FragOKs gauge
+node_netstat_Ip_FragOKs 1.48918e+06
+# TYPE node_netstat_Ip_FragFails gauge
+node_netstat_Ip_FragFails 29116
+# TYPE node_netstat_Ip_FragCreates gauge
+node_netstat_Ip_FragCreates 4.44171e+06
 # TYPE node_netstat_Tcp_RtoAlgorithm gauge
-node_netstat_Tcp_RtoAlgorithm 112
-# TYPE node_netstat_Tcp_RtoMax gauge
-node_netstat_Tcp_RtoMax 0
+node_netstat_Tcp_RtoAlgorithm 1
 # TYPE node_netstat_Tcp_RtoMin gauge
-node_netstat_Tcp_RtoMin 134
-# TYPE node_netstat_Udp_InDatagrams gauge
-node_netstat_Udp_InDatagrams 453163
-# TYPE node_netstat_Udp_InErrors gauge
-node_netstat_Udp_InErrors 8875
-# TYPE node_netstat_Udp_NoPorts gauge
-node_netstat_Udp_NoPorts 0
-# TYPE node_netstat_Udp_OutDatagrams gauge
-node_netstat_Udp_OutDatagrams 514658
-# TYPE node_netstat_Udp_RcvbufErrors gauge
-node_netstat_Udp_RcvbufErrors 0
-# TYPE node_netstat_Udp_SndbufErrors gauge
-node_netstat_Udp_SndbufErrors 0
+node_netstat_Tcp_RtoMin 200
+# TYPE node_netstat_Tcp_RtoMax gauge
+node_netstat_Tcp_RtoMax 120000
+# TYPE node_netstat_Tcp_MaxConn gauge
+node_netstat_Tcp_MaxConn -1
+# TYPE node_netstat_Tcp_ActiveOpens gauge
+node_netstat_Tcp_ActiveOpens 7
+# TYPE node_netstat_Tcp_PassiveOpens gauge
+node_netstat_Tcp_PassiveOpens 13941
+# TYPE node_netstat_Tcp_AttemptFails gauge
+node_netstat_Tcp_AttemptFails 0
+# TYPE node_netstat_Tcp_EstabResets gauge
+node_netstat_Tcp_EstabResets 189
+# TYPE node_netstat_Tcp_CurrEstab gauge
+node_netstat_Tcp_CurrEstab 2
+# TYPE node_netstat_Tcp_InSegs gauge
+node_netstat_Tcp_InSegs 196430
+# TYPE node_netstat_Tcp_OutSegs gauge
+node_netstat_Tcp_OutSegs 208112
+# TYPE node_netstat_Tcp_RetransSegs gauge
+node_netstat_Tcp_RetransSegs 113
+# TYPE node_netstat_Tcp_InErrs gauge
+node_netstat_Tcp_InErrs 0
+# TYPE node_netstat_Tcp_OutRsts gauge
+node_netstat_Tcp_OutRsts 134
 # TYPE node_netstat_UdpLite_InDatagrams gauge
 node_netstat_UdpLite_InDatagrams 0
-# TYPE node_netstat_UdpLite_InErrors gauge
-node_netstat_UdpLite_InErrors 0
 # TYPE node_netstat_UdpLite_NoPorts gauge
 node_netstat_UdpLite_NoPorts 0
+# TYPE node_netstat_UdpLite_InErrors gauge
+node_netstat_UdpLite_InErrors 0
 # TYPE node_netstat_UdpLite_OutDatagrams gauge
 node_netstat_UdpLite_OutDatagrams 0
 # TYPE node_netstat_UdpLite_RcvbufErrors gauge
 node_netstat_UdpLite_RcvbufErrors 0
 # TYPE node_netstat_UdpLite_SndbufErrors gauge
 node_netstat_UdpLite_SndbufErrors 0
+# TYPE node_netstat_Udp_InDatagrams gauge
+node_netstat_Udp_InDatagrams 456955
+# TYPE node_netstat_Udp_NoPorts gauge
+node_netstat_Udp_NoPorts 8948
+# TYPE node_netstat_Udp_InErrors gauge
+node_netstat_Udp_InErrors 0
+# TYPE node_netstat_Udp_OutDatagrams gauge
+node_netstat_Udp_OutDatagrams 518577
+# TYPE node_netstat_Udp_RcvbufErrors gauge
+node_netstat_Udp_RcvbufErrors 0
+# TYPE node_netstat_Udp_SndbufErrors gauge
+node_netstat_Udp_SndbufErrors 0
 # TYPE node_network_receive_bytes gauge
-node_network_receive_bytes{device="br-lan"} 4.433e+09
-node_network_receive_bytes{device="eth0"} 3.46545e+09
-node_network_receive_bytes{device="eth0.1"} 4.4331e+09
-node_network_receive_bytes{device="eth0.2"} 1.10279e+10
-node_network_receive_bytes{device="lo"} 237878
-node_network_receive_bytes{device="wlan0"} 5.0393e+06
-# TYPE node_network_receive_compressed gauge
-node_network_receive_compressed{device="br-lan"} 2.59493e+07
-node_network_receive_compressed{device="eth0"} 4.94071e+07
-node_network_receive_compressed{device="eth0.1"} 2.59354e+07
-node_network_receive_compressed{device="eth0.2"} 2.34715e+07
-node_network_receive_compressed{device="lo"} 3399
-node_network_receive_compressed{device="wlan0"} 43642
-# TYPE node_network_receive_drop gauge
-node_network_receive_drop{device="br-lan"} 0
-node_network_receive_drop{device="eth0"} 0
-node_network_receive_drop{device="eth0.1"} 0
-node_network_receive_drop{device="eth0.2"} 0
-node_network_receive_drop{device="lo"} 0
-node_network_receive_drop{device="wlan0"} 0
+node_network_receive_bytes{device="eth0.1"} 4.44607e+09
+node_network_receive_bytes{device="lo"} 237995
+node_network_receive_bytes{device="wlan0"} 5.09979e+06
+node_network_receive_bytes{device="eth0"} 3.50552e+09
+node_network_receive_bytes{device="br-lan"} 4.446e+09
+node_network_receive_bytes{device="eth0.2"} 1.10518e+10
+# TYPE node_network_receive_packets gauge
+node_network_receive_packets{device="eth0.1"} 2.60457e+07
+node_network_receive_packets{device="lo"} 3400
+node_network_receive_packets{device="wlan0"} 44118
+node_network_receive_packets{device="eth0"} 4.95829e+07
+node_network_receive_packets{device="br-lan"} 2.606e+07
+node_network_receive_packets{device="eth0.2"} 2.3537e+07
 # TYPE node_network_receive_errs gauge
-node_network_receive_errs{device="br-lan"} 15695
-node_network_receive_errs{device="eth0"} 0
 node_network_receive_errs{device="eth0.1"} 0
-node_network_receive_errs{device="eth0.2"} 4
 node_network_receive_errs{device="lo"} 0
 node_network_receive_errs{device="wlan0"} 0
+node_network_receive_errs{device="eth0"} 0
+node_network_receive_errs{device="br-lan"} 0
+node_network_receive_errs{device="eth0.2"} 0
+# TYPE node_network_receive_drop gauge
+node_network_receive_drop{device="eth0.1"} 0
+node_network_receive_drop{device="lo"} 0
+node_network_receive_drop{device="wlan0"} 0
+node_network_receive_drop{device="eth0"} 0
+node_network_receive_drop{device="br-lan"} 15812
+node_network_receive_drop{device="eth0.2"} 4
 # TYPE node_network_receive_fifo gauge
-node_network_receive_fifo{device="br-lan"} 0
-node_network_receive_fifo{device="eth0"} 60651
 node_network_receive_fifo{device="eth0.1"} 0
-node_network_receive_fifo{device="eth0.2"} 0
 node_network_receive_fifo{device="lo"} 0
 node_network_receive_fifo{device="wlan0"} 0
+node_network_receive_fifo{device="eth0"} 60651
+node_network_receive_fifo{device="br-lan"} 0
+node_network_receive_fifo{device="eth0.2"} 0
 # TYPE node_network_receive_frame gauge
-node_network_receive_frame{device="br-lan"} 0
-node_network_receive_frame{device="eth0"} 0
 node_network_receive_frame{device="eth0.1"} 0
-node_network_receive_frame{device="eth0.2"} 0
 node_network_receive_frame{device="lo"} 0
 node_network_receive_frame{device="wlan0"} 0
+node_network_receive_frame{device="eth0"} 0
+node_network_receive_frame{device="br-lan"} 0
+node_network_receive_frame{device="eth0.2"} 0
+# TYPE node_network_receive_compressed gauge
+node_network_receive_compressed{device="eth0.1"} 0
+node_network_receive_compressed{device="lo"} 0
+node_network_receive_compressed{device="wlan0"} 0
+node_network_receive_compressed{device="eth0"} 0
+node_network_receive_compressed{device="br-lan"} 0
+node_network_receive_compressed{device="eth0.2"} 0
 # TYPE node_network_receive_multicast gauge
-node_network_receive_multicast{device="br-lan"} 0
-node_network_receive_multicast{device="eth0"} 0
-node_network_receive_multicast{device="eth0.1"} 0
-node_network_receive_multicast{device="eth0.2"} 0
+node_network_receive_multicast{device="eth0.1"} 41016
 node_network_receive_multicast{device="lo"} 0
 node_network_receive_multicast{device="wlan0"} 0
-# TYPE node_network_receive_packets gauge
-node_network_receive_packets{device="br-lan"} 0
-node_network_receive_packets{device="eth0"} 0
-node_network_receive_packets{device="eth0.1"} 40720
-node_network_receive_packets{device="eth0.2"} 7779
-node_network_receive_packets{device="lo"} 0
-node_network_receive_packets{device="wlan0"} 0
+node_network_receive_multicast{device="eth0"} 0
+node_network_receive_multicast{device="br-lan"} 0
+node_network_receive_multicast{device="eth0.2"} 7849
 # TYPE node_network_transmit_bytes gauge
-node_network_transmit_bytes{device="br-lan"} 1.16381e+10
-node_network_transmit_bytes{device="eth0"} 3.49075e+09
-node_network_transmit_bytes{device="eth0.1"} 1.16275e+10
-node_network_transmit_bytes{device="eth0.2"} 4.54998e+09
-node_network_transmit_bytes{device="lo"} 237878
-node_network_transmit_bytes{device="wlan0"} 2.64217e+07
-# TYPE node_network_transmit_carrier gauge
-node_network_transmit_carrier{device="br-lan"} 2.4512e+07
-node_network_transmit_carrier{device="eth0"} 4.95456e+07
-node_network_transmit_carrier{device="eth0.1"} 2.44782e+07
-node_network_transmit_carrier{device="eth0.2"} 2.50673e+07
-node_network_transmit_carrier{device="lo"} 3399
-node_network_transmit_carrier{device="wlan0"} 149891
-# TYPE node_network_transmit_colls gauge
-node_network_transmit_colls{device="br-lan"} 0
-node_network_transmit_colls{device="eth0"} 0
-node_network_transmit_colls{device="eth0.1"} 0
-node_network_transmit_colls{device="eth0.2"} 0
-node_network_transmit_colls{device="lo"} 0
-node_network_transmit_colls{device="wlan0"} 0
-# TYPE node_network_transmit_compressed gauge
-node_network_transmit_compressed{device="br-lan"} 0
-node_network_transmit_compressed{device="eth0"} 0
-node_network_transmit_compressed{device="eth0.1"} 0
-node_network_transmit_compressed{device="eth0.2"} 0
-node_network_transmit_compressed{device="lo"} 0
-node_network_transmit_compressed{device="wlan0"} 0
-# TYPE node_network_transmit_drop gauge
-node_network_transmit_drop{device="br-lan"} 0
-node_network_transmit_drop{device="eth0"} 0
-node_network_transmit_drop{device="eth0.1"} 0
-node_network_transmit_drop{device="eth0.2"} 0
-node_network_transmit_drop{device="lo"} 0
-node_network_transmit_drop{device="wlan0"} 0
+node_network_transmit_bytes{device="eth0.1"} 1.1659e+10
+node_network_transmit_bytes{device="lo"} 237995
+node_network_transmit_bytes{device="wlan0"} 2.6692e+07
+node_network_transmit_bytes{device="eth0"} 3.53248e+09
+node_network_transmit_bytes{device="br-lan"} 1.16697e+10
+node_network_transmit_bytes{device="eth0.2"} 4.55953e+09
+# TYPE node_network_transmit_packets gauge
+node_network_transmit_packets{device="eth0.1"} 2.45859e+07
+node_network_transmit_packets{device="lo"} 3400
+node_network_transmit_packets{device="wlan0"} 151345
+node_network_transmit_packets{device="eth0"} 4.97224e+07
+node_network_transmit_packets{device="br-lan"} 2.462e+07
+node_network_transmit_packets{device="eth0.2"} 2.51364e+07
 # TYPE node_network_transmit_errs gauge
-node_network_transmit_errs{device="br-lan"} 0
-node_network_transmit_errs{device="eth0"} 0
 node_network_transmit_errs{device="eth0.1"} 0
-node_network_transmit_errs{device="eth0.2"} 0
 node_network_transmit_errs{device="lo"} 0
 node_network_transmit_errs{device="wlan0"} 0
+node_network_transmit_errs{device="eth0"} 0
+node_network_transmit_errs{device="br-lan"} 0
+node_network_transmit_errs{device="eth0.2"} 0
+# TYPE node_network_transmit_drop gauge
+node_network_transmit_drop{device="eth0.1"} 0
+node_network_transmit_drop{device="lo"} 0
+node_network_transmit_drop{device="wlan0"} 0
+node_network_transmit_drop{device="eth0"} 0
+node_network_transmit_drop{device="br-lan"} 0
+node_network_transmit_drop{device="eth0.2"} 0
 # TYPE node_network_transmit_fifo gauge
-node_network_transmit_fifo{device="br-lan"} 0
-node_network_transmit_fifo{device="eth0"} 0
 node_network_transmit_fifo{device="eth0.1"} 0
-node_network_transmit_fifo{device="eth0.2"} 0
 node_network_transmit_fifo{device="lo"} 0
 node_network_transmit_fifo{device="wlan0"} 0
-# TYPE node_network_transmit_packets gauge
-node_network_transmit_packets{device="br-lan"} 0
-node_network_transmit_packets{device="eth0"} 0
-node_network_transmit_packets{device="eth0.1"} 0
-node_network_transmit_packets{device="eth0.2"} 0
-node_network_transmit_packets{device="lo"} 0
-node_network_transmit_packets{device="wlan0"} 0
+node_network_transmit_fifo{device="eth0"} 0
+node_network_transmit_fifo{device="br-lan"} 0
+node_network_transmit_fifo{device="eth0.2"} 0
+# TYPE node_network_transmit_colls gauge
+node_network_transmit_colls{device="eth0.1"} 0
+node_network_transmit_colls{device="lo"} 0
+node_network_transmit_colls{device="wlan0"} 0
+node_network_transmit_colls{device="eth0"} 0
+node_network_transmit_colls{device="br-lan"} 0
+node_network_transmit_colls{device="eth0.2"} 0
+# TYPE node_network_transmit_carrier gauge
+node_network_transmit_carrier{device="eth0.1"} 0
+node_network_transmit_carrier{device="lo"} 0
+node_network_transmit_carrier{device="wlan0"} 0
+node_network_transmit_carrier{device="eth0"} 0
+node_network_transmit_carrier{device="br-lan"} 0
+node_network_transmit_carrier{device="eth0.2"} 0
+# TYPE node_network_transmit_compressed gauge
+node_network_transmit_compressed{device="eth0.1"} 0
+node_network_transmit_compressed{device="lo"} 0
+node_network_transmit_compressed{device="wlan0"} 0
+node_network_transmit_compressed{device="eth0"} 0
+node_network_transmit_compressed{device="br-lan"} 0
+node_network_transmit_compressed{device="eth0.2"} 0
 # TYPE node_procs_blocked gauge
 node_procs_blocked 0
 # TYPE node_procs_running gauge
-node_procs_running 1
+node_procs_running 3
 # TYPE node_time counter
 node_time 1.44606e+09
 # TYPE node_uname_info gauge
