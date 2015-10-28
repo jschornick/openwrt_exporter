@@ -55,14 +55,14 @@ end
 
 function print_metric_type(metric, mtype)
   this_metric = metric
-  client:send("# TYPE " .. metric .. " " .. mtype .. "\r\n")
+  client:send("# TYPE " .. metric .. " " .. mtype .. "\n")
 end
 
 function print_metric(labels, value)
   if labels then
-    client:send(this_metric .. "{" ..  labels .. "} " .. value .. "\r\n")
+    client:send(string.format("%s{%s} %g\n", this_metric, labels, value))
   else
-    client:send(string.format("%s %g\r\n", this_metric, value))
+    client:send(string.format("%s %g\n", this_metric, value))
   end
 end
 
