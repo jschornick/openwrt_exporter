@@ -34,7 +34,7 @@ end
 
 function metrics_header()
   client:send("HTTP/1.1 200 OK\r\nServer: lua-metrics\r\n")
-  client:send("Content-Type: text/plain\r\n\r\n")
+  client:send("Content-Type: text/plain; version=0.0.4\r\n\r\n")
 end
 
 function metrics_404()
