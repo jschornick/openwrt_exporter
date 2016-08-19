@@ -8,15 +8,6 @@
 
 socket = require("socket")
 
-netsubstat = {"IcmpMsg", "Icmp", "IpExt", "Ip", "TcpExt", "Tcp", "UdpLite", "Udp"}
-cpu_mode = {"user", "nice", "system", "idle", "iowait", "irq",
-            "softirq", "steal", "guest", "guest_nice"}
-netdevsubstat = {"receive_bytes", "receive_packets", "receive_errs",
-                 "receive_drop", "receive_fifo", "receive_frame", "receive_compressed",
-                 "receive_multicast", "transmit_bytes", "transmit_packets",
-                 "transmit_errs", "transmit_drop", "transmit_fifo", "transmit_colls",
-                 "transmit_carrier", "transmit_compressed"}
-
 -- Parsing
 
 function space_split(s)
@@ -62,18 +53,13 @@ function print_metric(labels, value)
 end
 
 function print_metrics()
-  local uname = space_split(io.popen("uname -a"):read("*a"))
-  local stat = get_contents("/proc/stat")
-  local file_nr = space_split(get_contents("/proc/sys/fs/file-nr"))
-  local loadavg = space_split(get_contents("/proc/loadavg"))
-  local meminfo = line_split(get_contents(
-                    "/proc/meminfo"):gsub("[):]", ""):gsub("[(]", "_"))
-  local netstat = get_contents("/proc/net/netstats") .. get_contents("/proc/net/snmp")
-  local netdevstat = line_split(get_contents("/proc/net/dev"))
-  for i, line in ipairs(netdevstat) do
-    netdevstat[i] = string.match(netdevstat[i], "%S.*")
-  end
 
+  local uname = space_split(io.popen("uname -a"):read("*a"))
+
+  -- cpu from stat
+  local cpu_mode = {"user", "nice", "system", "idle", "iowait", "irq",
+                    "softirq", "steal", "guest", "guest_nice"}
+  local stat = get_contents("/proc/stat")
   print_metric_type("node_boot_time", "gauge")
   print_metric(nil, string.match(stat, "btime ([0-9]+)"))
   print_metric_type("node_context_switches", "counter")
@@ -88,20 +74,31 @@ function print_metrics()
     end
     i = i + 1
   end
+
+  -- file handles
+  local file_nr = space_split(get_contents("/proc/sys/fs/file-nr"))
   print_metric_type("node_filefd_allocated", "gauge")
   print_metric(nil, file_nr[1])
   print_metric_type("node_filefd_maximum", "gauge")
   print_metric(nil, file_nr[3])
+
+  -- processes spawned / interrupts serviced from stat
   print_metric_type("node_forks", "counter")
   print_metric(nil, string.match(stat, "processes ([0-9]+)"))
   print_metric_type("node_intr", "counter")
   print_metric(nil, string.match(stat, "intr ([0-9]+)"))
+
+  -- load
+  local loadavg = space_split(get_contents("/proc/loadavg"))
   print_metric_type("node_load1", "gauge")
   print_metric(nil, loadavg[1])
   print_metric_type("node_load15", "gauge")
   print_metric(nil, loadavg[3])
   print_metric_type("node_load5", "gauge")
   print_metric(nil, loadavg[2])
+
+  -- memory
+  local meminfo = line_split(get_contents("/proc/meminfo"):gsub("[):]", ""):gsub("[(]", "_"))
   for i, mi in ipairs(meminfo) do
     local mia = space_split(mi)
     print_metric_type("node_memory_" .. mia[1], "gauge")
@@ -111,6 +108,10 @@ function print_metrics()
       print_metric(nil, mia[2])
     end
   end
+
+  -- network
+  local netsubstat = {"IcmpMsg", "Icmp", "IpExt", "Ip", "TcpExt", "Tcp", "UdpLite", "Udp"}
+  local netstat = get_contents("/proc/net/netstats") .. get_contents("/proc/net/snmp")
   for i, nss in ipairs(netsubstat) do
     local substat_s = string.match(netstat, nss .. ": ([A-Z][A-Za-z0-9 ]+)")
     if substat_s then
@@ -121,6 +122,17 @@ function print_metrics()
         print_metric(nil, substatv[ii])
       end
     end
+  end
+
+  -- network devices
+  local netdevsubstat = {"receive_bytes", "receive_packets", "receive_errs",
+                   "receive_drop", "receive_fifo", "receive_frame", "receive_compressed",
+                   "receive_multicast", "transmit_bytes", "transmit_packets",
+                   "transmit_errs", "transmit_drop", "transmit_fifo", "transmit_colls",
+                   "transmit_carrier", "transmit_compressed"}
+  local netdevstat = line_split(get_contents("/proc/net/dev"))
+  for i, line in ipairs(netdevstat) do
+    netdevstat[i] = string.match(netdevstat[i], "%S.*")
   end
   local nds_table = {}
   local devs = {}
@@ -138,12 +150,17 @@ function print_metrics()
     end
   end
 
+  -- more from stat
   print_metric_type("node_procs_blocked", "gauge")
   print_metric(nil, string.match(stat, "procs_blocked ([0-9]+)"))
   print_metric_type("node_procs_running", "gauge")
   print_metric(nil, string.match(stat, "procs_running ([0-9]+)"))
+
+  -- current time
   print_metric_type("node_time", "counter")
   print_metric(nil, os.time())
+
+  -- uname
   print_metric_type("node_uname_info", "gauge")
   print_metric(string.format('domainname="(none)",machine="%s",nodename="%s",' ..
                              'release="%s",sysname="%s",version="%s %s %s %s %s %s %s"',
