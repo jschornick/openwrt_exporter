@@ -155,17 +155,17 @@ end
 -- Web server-specific functions
 
 function http_ok_header()
-  output("HTTP/1.1 200 OK")
-  output("Server: lua-metrics")
-  output("Content-Type: text/plain; version=0.0.4")
-  output("")
+  output("HTTP/1.1 200 OK\r")
+  output("Server: lua-metrics\r")
+  output("Content-Type: text/plain; version=0.0.4\r")
+  output("\r")
 end
 
 function http_not_found()
-  output("HTTP/1.1 404 Not Found")
-  output("Server: lua-metrics")
-  output("Content-Type: text/plain")
-  output("")
+  output("HTTP/1.1 404 Not Found\r")
+  output("Server: lua-metrics\r")
+  output("Content-Type: text/plain\r")
+  output("\r")
   output("ERROR: File Not Found.")
 end
 
@@ -197,7 +197,7 @@ if port then
     local request, err = client:receive()
 
     if not err then
-      output = function (str) client:send(str.."\r\n") end
+      output = function (str) client:send(str.."\n") end
       if not serve(request) then
         break
       end
