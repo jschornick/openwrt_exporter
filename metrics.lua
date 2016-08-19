@@ -7,6 +7,7 @@
 -- Licensed under the Apache License, Version 2.0
 
 socket = require("socket")
+
 netsubstat = {"IcmpMsg", "Icmp", "IpExt", "Ip", "TcpExt", "Tcp", "UdpLite", "Udp"}
 cpu_mode = {"user", "nice", "system", "idle", "iowait", "irq",
             "softirq", "steal", "guest", "guest_nice"}
@@ -33,13 +34,13 @@ function line_split(s)
 end
 
 function metrics_header()
-  client:send("HTTP/1.1 200 OK\r\nServer: lua-metrics\r\n")
-  client:send("Content-Type: text/plain; version=0.0.4\r\n\r\n")
+  output("HTTP/1.1 200 OK\r\nServer: lua-metrics\r")
+  output("Content-Type: text/plain; version=0.0.4\r\n\r")
 end
 
 function metrics_404()
-  client:send("HTTP/1.1 404 Not Found\r\nServer: lua-metrics\r\n")
-  client:send("Content-Type: text/plain\r\n\r\nERROR: File Not Found.\r\n")
+  output("HTTP/1.1 404 Not Found\r\nServer: lua-metrics\r")
+  output("Content-Type: text/plain\r\n\r\nERROR: File Not Found.\r")
 end
 
 function get_contents(filename)
@@ -55,14 +56,14 @@ end
 
 function print_metric_type(metric, mtype)
   this_metric = metric
-  client:send("# TYPE " .. metric .. " " .. mtype .. "\n")
+  output("# TYPE " .. metric .. " " .. mtype)
 end
 
 function print_metric(labels, value)
   if labels then
-    client:send(string.format("%s{%s} %s\n", this_metric, labels, value))
+    output(string.format("%s{%s} %s", this_metric, labels, value))
   else
-    client:send(string.format("%s %s\n", this_metric, value))
+    output(string.format("%s %s", this_metric, value))
   end
 end
 
@@ -70,10 +71,15 @@ function serve(request)
   if not string.match(request, "GET /metrics.*") then
     metrics_404()
     client:close()
-    return true
+  else
+    metrics_header()
+    print_metrics()
+    client:close()
   end
+  return true
+end
 
-  metrics_header()
+function print_metrics()
   local uname = space_split(io.popen("uname -a"):read("*a"))
   local stat = get_contents("/proc/stat")
   local file_nr = space_split(get_contents("/proc/sys/fs/file-nr"))
@@ -162,21 +168,33 @@ function serve(request)
                              uname[11], uname[2], uname[3], uname[1], uname[4], uname[5],
                              uname[6], uname[7], uname[8], uname[9], uname[10]), 1)
 
-  client:close()
-  return true
 end
 
--- Main program.
-server = assert(socket.bind("*", 9100))
 
-while 1 do
-  client = server:accept()
-  client:settimeout(60)
-  local request, err = client:receive()
+-- Main program
 
-  if not err then
-    if not serve(request) then
-      break
+for k,v in ipairs(arg) do
+  if (v == "-p") or (v == "--port") then
+    port = arg[k+1]
+  end
+end
+
+if port then
+  server = assert(socket.bind("*", port))
+
+  while 1 do
+    client = server:accept()
+    client:settimeout(60)
+    local request, err = client:receive()
+
+    if not err then
+      output = function (str) client:send(str.."\n") end
+      if not serve(request) then
+        break
+      end
     end
   end
+else
+  output = print
+  print_metrics()
 end
