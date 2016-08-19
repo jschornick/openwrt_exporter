@@ -52,20 +52,22 @@ function print_metric(labels, value)
   end
 end
 
-function print_metrics()
-
-  local uname = space_split(io.popen("uname -a"):read("*a"))
-
-  -- cpu from stat
-  local cpu_mode = {"user", "nice", "system", "idle", "iowait", "irq",
-                    "softirq", "steal", "guest", "guest_nice"}
+function metrics_cpu()
   local stat = get_contents("/proc/stat")
+
+  -- system boot time, seconds since epoch
   print_metric_type("node_boot_time", "gauge")
   print_metric(nil, string.match(stat, "btime ([0-9]+)"))
+
+  -- context switches since boot (all CPUs)
   print_metric_type("node_context_switches", "counter")
   print_metric(nil, string.match(stat, "ctxt ([0-9]+)"))
-  print_metric_type("node_cpu", "counter")
+
+  -- cpu times, per CPU, per mode
+  local cpu_mode = {"user", "nice", "system", "idle", "iowait", "irq",
+                    "softirq", "steal", "guest", "guest_nice"}
   local i = 0
+  print_metric_type("node_cpu", "counter")
   while string.match(stat, string.format("cpu%d ", i)) do
     cpu = space_split(string.match(stat, string.format("cpu%d ([0-9 ]+)", i)))
     local label = string.format('cpu="cpu%d",mode="%%s"', i)
@@ -75,30 +77,37 @@ function print_metrics()
     i = i + 1
   end
 
-  -- file handles
-  local file_nr = space_split(get_contents("/proc/sys/fs/file-nr"))
-  print_metric_type("node_filefd_allocated", "gauge")
-  print_metric(nil, file_nr[1])
-  print_metric_type("node_filefd_maximum", "gauge")
-  print_metric(nil, file_nr[3])
-
-  -- processes spawned / interrupts serviced from stat
-  print_metric_type("node_forks", "counter")
-  print_metric(nil, string.match(stat, "processes ([0-9]+)"))
+  -- interrupts served
   print_metric_type("node_intr", "counter")
   print_metric(nil, string.match(stat, "intr ([0-9]+)"))
 
-  -- load
+  -- processes forked
+  print_metric_type("node_forks", "counter")
+  print_metric(nil, string.match(stat, "processes ([0-9]+)"))
+
+  -- processes running
+  print_metric_type("node_procs_running", "gauge")
+  print_metric(nil, string.match(stat, "procs_running ([0-9]+)"))
+
+  -- processes blocked for I/O
+  print_metric_type("node_procs_blocked", "gauge")
+  print_metric(nil, string.match(stat, "procs_blocked ([0-9]+)"))
+end
+
+function metrics_load_averages()
   local loadavg = space_split(get_contents("/proc/loadavg"))
+
   print_metric_type("node_load1", "gauge")
   print_metric(nil, loadavg[1])
   print_metric_type("node_load15", "gauge")
   print_metric(nil, loadavg[3])
   print_metric_type("node_load5", "gauge")
   print_metric(nil, loadavg[2])
+end
 
-  -- memory
+function metrics_memory()
   local meminfo = line_split(get_contents("/proc/meminfo"):gsub("[):]", ""):gsub("[(]", "_"))
+
   for i, mi in ipairs(meminfo) do
     local mia = space_split(mi)
     print_metric_type("node_memory_" .. mia[1], "gauge")
@@ -108,10 +117,24 @@ function print_metrics()
       print_metric(nil, mia[2])
     end
   end
+end
 
-  -- network
+function metrics_file_handles()
+  local file_nr = space_split(get_contents("/proc/sys/fs/file-nr"))
+
+  print_metric_type("node_filefd_allocated", "gauge")
+  print_metric(nil, file_nr[1])
+  print_metric_type("node_filefd_maximum", "gauge")
+  print_metric(nil, file_nr[3])
+end
+
+function metrics_network()
+  -- NOTE: Both of these are missing in OpenWRT kernels.
+  --       See: https://dev.openwrt.org/ticket/15781
+  local netstat = get_contents("/proc/net/netstat") .. get_contents("/proc/net/snmp")
+
+  -- all devices
   local netsubstat = {"IcmpMsg", "Icmp", "IpExt", "Ip", "TcpExt", "Tcp", "UdpLite", "Udp"}
-  local netstat = get_contents("/proc/net/netstats") .. get_contents("/proc/net/snmp")
   for i, nss in ipairs(netsubstat) do
     local substat_s = string.match(netstat, nss .. ": ([A-Z][A-Za-z0-9 ]+)")
     if substat_s then
@@ -123,14 +146,15 @@ function print_metrics()
       end
     end
   end
+end
 
-  -- network devices
+function metrics_network_devices()
+  local netdevstat = line_split(get_contents("/proc/net/dev"))
   local netdevsubstat = {"receive_bytes", "receive_packets", "receive_errs",
                    "receive_drop", "receive_fifo", "receive_frame", "receive_compressed",
                    "receive_multicast", "transmit_bytes", "transmit_packets",
                    "transmit_errs", "transmit_drop", "transmit_fifo", "transmit_colls",
                    "transmit_carrier", "transmit_compressed"}
-  local netdevstat = line_split(get_contents("/proc/net/dev"))
   for i, line in ipairs(netdevstat) do
     netdevstat[i] = string.match(netdevstat[i], "%S.*")
   end
@@ -149,24 +173,33 @@ function print_metrics()
       print_metric('device="' .. d .. '"', nds_table[d][i])
     end
   end
+end
 
-  -- more from stat
-  print_metric_type("node_procs_blocked", "gauge")
-  print_metric(nil, string.match(stat, "procs_blocked ([0-9]+)"))
-  print_metric_type("node_procs_running", "gauge")
-  print_metric(nil, string.match(stat, "procs_running ([0-9]+)"))
-
+function metrics_time()
   -- current time
   print_metric_type("node_time", "counter")
   print_metric(nil, os.time())
+end
 
-  -- uname
+function metrics_uname()
+  local uname = space_split(io.popen("uname -a"):read("*a"))
   print_metric_type("node_uname_info", "gauge")
+  -- TODO: check these fields
   print_metric(string.format('domainname="(none)",machine="%s",nodename="%s",' ..
-                             'release="%s",sysname="%s",version="%s %s %s %s %s %s %s"',
+                               'release="%s",sysname="%s",version="%s %s %s %s %s %s %s"',
                              uname[11], uname[2], uname[3], uname[1], uname[4], uname[5],
                              uname[6], uname[7], uname[8], uname[9], uname[10]), 1)
+end
 
+function print_all_metrics()
+  metrics_cpu()
+  metrics_load_averages()
+  metrics_memory()
+  metrics_file_handles()
+  metrics_network()
+  metrics_network_devices()
+  metrics_time()
+  metrics_uname()
 end
 
 -- Web server-specific functions
@@ -191,7 +224,7 @@ function serve(request)
     http_not_found()
   else
     http_ok_header()
-    print_metrics()
+    print_all_metrics()
   end
   client:close()
   return true
@@ -222,5 +255,5 @@ if port then
   end
 else
   output = print
-  print_metrics()
+  print_all_metrics()
 end
