@@ -33,14 +33,19 @@ function line_split(s)
   return elements
 end
 
-function metrics_header()
-  output("HTTP/1.1 200 OK\r\nServer: lua-metrics\r")
-  output("Content-Type: text/plain; version=0.0.4\r\n\r")
+function http_ok_header()
+  output("HTTP/1.1 200 OK")
+  output("Server: lua-metrics")
+  output("Content-Type: text/plain; version=0.0.4")
+  output("")
 end
 
-function metrics_404()
-  output("HTTP/1.1 404 Not Found\r\nServer: lua-metrics\r")
-  output("Content-Type: text/plain\r\n\r\nERROR: File Not Found.\r")
+function http_not_found()
+  output("HTTP/1.1 404 Not Found")
+  output("Server: lua-metrics")
+  output("Content-Type: text/plain")
+  output("")
+  output("ERROR: File Not Found.")
 end
 
 function get_contents(filename)
@@ -69,10 +74,10 @@ end
 
 function serve(request)
   if not string.match(request, "GET /metrics.*") then
-    metrics_404()
+    http_not_found()
     client:close()
   else
-    metrics_header()
+    http_ok_header()
     print_metrics()
     client:close()
   end
@@ -188,7 +193,7 @@ if port then
     local request, err = client:receive()
 
     if not err then
-      output = function (str) client:send(str.."\n") end
+      output = function (str) client:send(str.."\r\n") end
       if not serve(request) then
         break
       end
