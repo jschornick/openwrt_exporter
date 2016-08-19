@@ -1,7 +1,10 @@
 #!/usr/bin/lua
--- Metrics web server (0.1)
+
+-- Metrics web server
+
+-- Copyright (c) 2016 Jeff Schornick <jeff@schornick.org>
 -- Copyright (c) 2015 Kevin Lyda
--- Apache 2.0 License
+-- Licensed under the Apache License, Version 2.0
 
 socket = require("socket")
 netsubstat = {"IcmpMsg", "Icmp", "IpExt", "Ip", "TcpExt", "Tcp", "UdpLite", "Udp"}
@@ -57,9 +60,9 @@ end
 
 function print_metric(labels, value)
   if labels then
-    client:send(string.format("%s{%s} %g\n", this_metric, labels, value))
+    client:send(string.format("%s{%s} %s\n", this_metric, labels, value))
   else
-    client:send(string.format("%s %g\n", this_metric, value))
+    client:send(string.format("%s %s\n", this_metric, value))
   end
 end
 
