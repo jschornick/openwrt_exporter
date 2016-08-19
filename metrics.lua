@@ -117,7 +117,7 @@ function serve(request)
   for i, mi in ipairs(meminfo) do
     local mia = space_split(mi)
     print_metric_type("node_memory_" .. mia[1], "gauge")
-    if table.getn(mia) == 3 then
+    if #mia == 3 then
       print_metric(nil, mia[2] * 1024)
     else
       print_metric(nil, mia[2])
