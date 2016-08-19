@@ -17,6 +17,8 @@ netdevsubstat = {"receive_bytes", "receive_packets", "receive_errs",
                  "transmit_errs", "transmit_drop", "transmit_fifo", "transmit_colls",
                  "transmit_carrier", "transmit_compressed"}
 
+-- Parsing
+
 function space_split(s)
   elements = {}
   for element in s:gmatch("%S+") do
@@ -33,21 +35,6 @@ function line_split(s)
   return elements
 end
 
-function http_ok_header()
-  output("HTTP/1.1 200 OK")
-  output("Server: lua-metrics")
-  output("Content-Type: text/plain; version=0.0.4")
-  output("")
-end
-
-function http_not_found()
-  output("HTTP/1.1 404 Not Found")
-  output("Server: lua-metrics")
-  output("Content-Type: text/plain")
-  output("")
-  output("ERROR: File Not Found.")
-end
-
 function get_contents(filename)
   local f = io.open(filename, "rb")
   local contents = ""
@@ -58,6 +45,8 @@ function get_contents(filename)
 
   return contents
 end
+
+-- Metric printing
 
 function print_metric_type(metric, mtype)
   this_metric = metric
@@ -70,18 +59,6 @@ function print_metric(labels, value)
   else
     output(string.format("%s %s", this_metric, value))
   end
-end
-
-function serve(request)
-  if not string.match(request, "GET /metrics.*") then
-    http_not_found()
-    client:close()
-  else
-    http_ok_header()
-    print_metrics()
-    client:close()
-  end
-  return true
 end
 
 function print_metrics()
@@ -175,6 +152,33 @@ function print_metrics()
 
 end
 
+-- Web server-specific functions
+
+function http_ok_header()
+  output("HTTP/1.1 200 OK")
+  output("Server: lua-metrics")
+  output("Content-Type: text/plain; version=0.0.4")
+  output("")
+end
+
+function http_not_found()
+  output("HTTP/1.1 404 Not Found")
+  output("Server: lua-metrics")
+  output("Content-Type: text/plain")
+  output("")
+  output("ERROR: File Not Found.")
+end
+
+function serve(request)
+  if not string.match(request, "GET /metrics.*") then
+    http_not_found()
+  else
+    http_ok_header()
+    print_metrics()
+  end
+  client:close()
+  return true
+end
 
 -- Main program
 
