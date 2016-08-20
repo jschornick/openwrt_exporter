@@ -8,6 +8,9 @@
 
 socket = require("socket")
 
+scrapers = { "cpu", "load_averages", "memory", "file_handles", "network",
+             "network_devices", "time", "uname"}
+
 -- Parsing
 
 function space_split(s)
@@ -52,7 +55,7 @@ function print_metric(labels, value)
   end
 end
 
-function metrics_cpu()
+function scraper_cpu()
   local stat = get_contents("/proc/stat")
 
   -- system boot time, seconds since epoch
@@ -94,7 +97,7 @@ function metrics_cpu()
   print_metric(nil, string.match(stat, "procs_blocked ([0-9]+)"))
 end
 
-function metrics_load_averages()
+function scraper_load_averages()
   local loadavg = space_split(get_contents("/proc/loadavg"))
 
   print_metric_type("node_load1", "gauge")
@@ -105,7 +108,7 @@ function metrics_load_averages()
   print_metric(nil, loadavg[2])
 end
 
-function metrics_memory()
+function scraper_memory()
   local meminfo = line_split(get_contents("/proc/meminfo"):gsub("[):]", ""):gsub("[(]", "_"))
 
   for i, mi in ipairs(meminfo) do
@@ -119,7 +122,7 @@ function metrics_memory()
   end
 end
 
-function metrics_file_handles()
+function scraper_file_handles()
   local file_nr = space_split(get_contents("/proc/sys/fs/file-nr"))
 
   print_metric_type("node_filefd_allocated", "gauge")
@@ -128,7 +131,7 @@ function metrics_file_handles()
   print_metric(nil, file_nr[3])
 end
 
-function metrics_network()
+function scraper_network()
   -- NOTE: Both of these are missing in OpenWRT kernels.
   --       See: https://dev.openwrt.org/ticket/15781
   local netstat = get_contents("/proc/net/netstat") .. get_contents("/proc/net/snmp")
@@ -148,7 +151,7 @@ function metrics_network()
   end
 end
 
-function metrics_network_devices()
+function scraper_network_devices()
   local netdevstat = line_split(get_contents("/proc/net/dev"))
   local netdevsubstat = {"receive_bytes", "receive_packets", "receive_errs",
                    "receive_drop", "receive_fifo", "receive_frame", "receive_compressed",
@@ -175,13 +178,13 @@ function metrics_network_devices()
   end
 end
 
-function metrics_time()
+function scraper_time()
   -- current time
   print_metric_type("node_time", "counter")
   print_metric(nil, os.time())
 end
 
-function metrics_uname()
+function scraper_uname()
   local uname = space_split(io.popen("uname -a"):read("*a"))
   print_metric_type("node_uname_info", "gauge")
   -- TODO: check these fields
@@ -191,15 +194,31 @@ function metrics_uname()
                              uname[6], uname[7], uname[8], uname[9], uname[10]), 1)
 end
 
-function print_all_metrics()
-  metrics_cpu()
-  metrics_load_averages()
-  metrics_memory()
-  metrics_file_handles()
-  metrics_network()
-  metrics_network_devices()
-  metrics_time()
-  metrics_uname()
+function timed_scrape(scraper)
+  local start_time = socket.gettime()
+  -- build the function name and call it from global variable table
+  _G["scraper_"..scraper]()
+  local duration = socket.gettime() - start_time
+  return duration
+end
+
+function run_all_scrapers()
+  times = {}
+  for i,scraper in ipairs(scrapers) do
+    runtime = timed_scrape(scraper)
+    times[scraper] = runtime
+    scrape_time_sums[scraper] = scrape_time_sums[scraper] + runtime
+    scrape_counts[scraper] = scrape_counts[scraper] + 1
+  end
+
+  print_metric_type("node_exporter_scrape_duration_seconds", "summary")
+  for i,scraper in ipairs(scrapers) do
+    labels = 'collector="'..scraper..'",result="success"'
+    print_metric(labels, times[scraper])
+    -- TODO: output counts and total times (requires adjusting print_metric)
+    --print(scrape_time_sums[scraper])
+    --print(scrape_counts[scraper])
+  end
 end
 
 -- Web server-specific functions
@@ -224,7 +243,7 @@ function serve(request)
     http_not_found()
   else
     http_ok_header()
-    print_all_metrics()
+    run_all_scrapers()
   end
   client:close()
   return true
@@ -236,6 +255,13 @@ for k,v in ipairs(arg) do
   if (v == "-p") or (v == "--port") then
     port = arg[k+1]
   end
+end
+
+scrape_counts = {}
+scrape_time_sums = {}
+for i,scraper in ipairs(scrapers) do
+  scrape_counts[scraper] = 0
+  scrape_time_sums[scraper] = 0
 end
 
 if port then
@@ -255,5 +281,5 @@ if port then
   end
 else
   output = print
-  print_all_metrics()
+  run_all_scrapers()
 end
