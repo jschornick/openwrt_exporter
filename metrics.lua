@@ -8,6 +8,11 @@
 
 socket = require("socket")
 
+-- Allow us to call unpack under both lua5.1 and lua5.2+
+local unpack = unpack or table.unpack
+
+-- This table defines the scrapers to run.
+-- Each corresponds directly to a scraper_<name> function.
 scrapers = { "cpu", "load_averages", "memory", "file_handles", "network",
              "network_devices", "time", "uname"}
 
@@ -42,93 +47,90 @@ end
 
 -- Metric printing
 
-function print_metric_type(metric, mtype)
-  this_metric = metric
-  output("# TYPE " .. metric .. " " .. mtype)
+function print_metric(metric, labels, value)
+  local label_string = ""
+  if labels then
+    for label,value in pairs(labels) do
+      label_string =  label_string .. label .. '="' .. value .. '",'
+    end
+    label_string = "{" .. string.sub(label_string, 1, -2) .. "}"
+  end
+  output(string.format("%s%s %s", metric, label_string, value))
 end
 
-function print_metric(labels, value)
-  if labels then
-    output(string.format("%s{%s} %s", this_metric, labels, value))
-  else
-    output(string.format("%s %s", this_metric, value))
+function metric(name, mtype, labels, value)
+  output("# TYPE " .. name .. " " .. mtype)
+  local outputter = function(labels, value)
+    print_metric(name, labels, value)
   end
+  if value then
+    outputter(labels, value)
+  end
+  return outputter
 end
 
 function scraper_cpu()
   local stat = get_contents("/proc/stat")
 
   -- system boot time, seconds since epoch
-  print_metric_type("node_boot_time", "gauge")
-  print_metric(nil, string.match(stat, "btime ([0-9]+)"))
+  metric("node_boot_time", "gauge", nil, string.match(stat, "btime ([0-9]+)"))
 
   -- context switches since boot (all CPUs)
-  print_metric_type("node_context_switches", "counter")
-  print_metric(nil, string.match(stat, "ctxt ([0-9]+)"))
+  metric("node_context_switches", "counter", nil, string.match(stat, "ctxt ([0-9]+)"))
 
   -- cpu times, per CPU, per mode
   local cpu_mode = {"user", "nice", "system", "idle", "iowait", "irq",
                     "softirq", "steal", "guest", "guest_nice"}
   local i = 0
-  print_metric_type("node_cpu", "counter")
+  local cpu_metric = metric("node_cpu", "counter")
   while string.match(stat, string.format("cpu%d ", i)) do
-    cpu = space_split(string.match(stat, string.format("cpu%d ([0-9 ]+)", i)))
-    local label = string.format('cpu="cpu%d",mode="%%s"', i)
+    local cpu = space_split(string.match(stat, string.format("cpu%d ([0-9 ]+)", i)))
+    local labels = {cpu = "cpu" .. i}
     for ii, mode in ipairs(cpu_mode) do
-      print_metric(string.format(label, mode), cpu[ii] / 100)
+      labels['mode'] = mode
+      cpu_metric(labels, cpu[ii] / 100)
     end
     i = i + 1
   end
 
   -- interrupts served
-  print_metric_type("node_intr", "counter")
-  print_metric(nil, string.match(stat, "intr ([0-9]+)"))
+  metric("node_intr", "counter", nil, string.match(stat, "intr ([0-9]+)"))
 
   -- processes forked
-  print_metric_type("node_forks", "counter")
-  print_metric(nil, string.match(stat, "processes ([0-9]+)"))
+  metric("node_forks", "counter", nil, string.match(stat, "processes ([0-9]+)"))
 
   -- processes running
-  print_metric_type("node_procs_running", "gauge")
-  print_metric(nil, string.match(stat, "procs_running ([0-9]+)"))
+  metric("node_procs_running", "gauge", nil, string.match(stat, "procs_running ([0-9]+)"))
 
   -- processes blocked for I/O
-  print_metric_type("node_procs_blocked", "gauge")
-  print_metric(nil, string.match(stat, "procs_blocked ([0-9]+)"))
+  metric("node_procs_blocked", "gauge", nil, string.match(stat, "procs_blocked ([0-9]+)"))
 end
 
 function scraper_load_averages()
   local loadavg = space_split(get_contents("/proc/loadavg"))
 
-  print_metric_type("node_load1", "gauge")
-  print_metric(nil, loadavg[1])
-  print_metric_type("node_load15", "gauge")
-  print_metric(nil, loadavg[3])
-  print_metric_type("node_load5", "gauge")
-  print_metric(nil, loadavg[2])
+  metric("node_load1", "gauge", nil, loadavg[1])
+  metric("node_load5", "gauge", nil, loadavg[2])
+  metric("node_load15", "gauge", nil, loadavg[3])
 end
 
 function scraper_memory()
   local meminfo = line_split(get_contents("/proc/meminfo"):gsub("[):]", ""):gsub("[(]", "_"))
 
   for i, mi in ipairs(meminfo) do
-    local mia = space_split(mi)
-    print_metric_type("node_memory_" .. mia[1], "gauge")
-    if #mia == 3 then
-      print_metric(nil, mia[2] * 1024)
-    else
-      print_metric(nil, mia[2])
+    local name, size, unit = unpack(space_split(mi))
+    if unit == 'kB' then
+      size = size * 1024
     end
+    metric("node_memory_" .. name, "gauge", nil, size)
   end
 end
 
 function scraper_file_handles()
   local file_nr = space_split(get_contents("/proc/sys/fs/file-nr"))
 
-  print_metric_type("node_filefd_allocated", "gauge")
-  print_metric(nil, file_nr[1])
-  print_metric_type("node_filefd_maximum", "gauge")
-  print_metric(nil, file_nr[3])
+  metric("node_filefd_allocated", "gauge", nil, file_nr[1])
+  metric("node_filefd_maximum", "gauge", nil, file_nr[3])
 end
 
 function scraper_network()
@@ -144,8 +146,7 @@ function scraper_network()
       local substat = space_split(substat_s)
       local substatv = space_split(string.match(netstat, nss .. ": ([0-9 -]+)"))
       for ii, ss in ipairs(substat) do
-        print_metric_type("node_netstat_" .. nss .. "_" .. ss, "gauge")
-        print_metric(nil, substatv[ii])
+        metric("node_netstat_" .. nss .. "_" .. ss, "gauge", nil, substatv[ii])
       end
     end
   end
@@ -171,27 +172,32 @@ function scraper_network_devices()
     end
   end
   for i, ndss in ipairs(netdevsubstat) do
-    print_metric_type("node_network_" .. ndss, "gauge")
+    netdev_metric = metric("node_network_" .. ndss, "gauge")
     for ii, d in ipairs(devs) do
-      print_metric('device="' .. d .. '"', nds_table[d][i])
+      netdev_metric({device=d}, nds_table[d][i])
     end
   end
 end
 
 function scraper_time()
   -- current time
-  print_metric_type("node_time", "counter")
-  print_metric(nil, os.time())
+  metric("node_time", "counter", nil, os.time())
 end
 
 function scraper_uname()
-  local uname = space_split(io.popen("uname -a"):read("*a"))
-  print_metric_type("node_uname_info", "gauge")
-  -- TODO: check these fields
-  print_metric(string.format('domainname="(none)",machine="%s",nodename="%s",' ..
-                               'release="%s",sysname="%s",version="%s %s %s %s %s %s %s"',
-                             uname[11], uname[2], uname[3], uname[1], uname[4], uname[5],
-                             uname[6], uname[7], uname[8], uname[9], uname[10]), 1)
+  -- version can have spaces, so grab it directly
+  local version = string.sub(io.popen("uname -v"):read("*a"), 1, -2)
+  -- avoid individual popen calls for the rest of the values
+  local uname_string = io.popen("uname -a"):read("*a")
+  local sysname, nodename, release = unpack(space_split(uname_string))
+  local labels = {domainname = "(none)", nodename = nodename, release = release,
+                  sysname = sysname, version = version}
+
+  -- The machine hardware name is immediately after the version string, so add
+  -- up the values we know and add in the 4 spaces to find the offset...
+  machine_offset = string.len(sysname .. nodename .. release .. version) + 4
+  labels['machine'] = string.match(string.sub(uname_string, machine_offset), "(%S+)" )
+  metric("node_uname_info", "gauge", labels, 1)
 end
 
 function timed_scrape(scraper)
@@ -211,13 +217,13 @@ function run_all_scrapers()
     scrape_counts[scraper] = scrape_counts[scraper] + 1
   end
 
-  print_metric_type("node_exporter_scrape_duration_seconds", "summary")
+  local name = "node_exporter_scrape_duration_seconds"
+  local duration_metric = metric(name, "summary")
   for i,scraper in ipairs(scrapers) do
-    labels = 'collector="'..scraper..'",result="success"'
-    print_metric(labels, times[scraper])
-    -- TODO: output counts and total times (requires adjusting print_metric)
-    --print(scrape_time_sums[scraper])
-    --print(scrape_counts[scraper])
+    local labels = {collector=scraper, result="success"} 
+    duration_metric(labels, times[scraper])
+    print_metric(name.."_sum", labels, scrape_time_sums[scraper])
+    print_metric(name.."_count", labels, scrape_counts[scraper])
   end
 end
 
