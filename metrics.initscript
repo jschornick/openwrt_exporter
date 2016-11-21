@@ -1,0 +1,18 @@
+#!/bin/sh /etc/rc.common
+
+# Copy script to the /etc/init.d/ directory
+# Make sure the execute bit is on
+# chmod +x /etc/init.d/<your script>
+# Enable your script
+# /etc/init.d/node-exporter enable
+
+START=10
+STOP=15
+
+start() {
+  lua /root/metrics.lua --port 9100 &
+}
+
+stop() {
+  echo stop
+}
