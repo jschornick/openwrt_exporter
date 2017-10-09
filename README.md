@@ -1,4 +1,4 @@
-#openwrt_exporter
+# openwrt_exporter
 A openwrt exporter written in lua.
 
 Example usage
