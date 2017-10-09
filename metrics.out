@@ -373,3 +373,8 @@ node_procs_running 3
 node_time 1.44606e+09
 # TYPE node_uname_info gauge
 node_uname_info{domainname="(none)",machine="mips",nodename="owsla",release="3.3.8",sysname="Linux",version="#2 Sat Oct 20 12:31:22 UTC 2012"} 1
+# TYPE wifi_client gauge
+# wifi_client{iface="wlan1"} 3
+# wifi_client{iface="wlan0"} 1
+# # TYPE nat_sessions gauge
+# nat_sessions 994

@@ -14,7 +14,7 @@ local unpack = unpack or table.unpack
 -- This table defines the scrapers to run.
 -- Each corresponds directly to a scraper_<name> function.
 scrapers = { "cpu", "load_averages", "memory", "file_handles", "network",
-             "network_devices", "time", "uname"}
+             "network_devices", "time", "uname", "wifi_clients", "nat_sessions"}
 
 -- Parsing
 
@@ -43,6 +43,17 @@ function get_contents(filename)
   end
 
   return contents
+end
+
+function os.capture(cmd, raw)
+  local f = assert(io.popen(cmd, 'r'))
+  local s = assert(f:read('*a'))
+  f:close()
+  if raw then return s end
+  s = string.gsub(s, '^%s+', '')
+  s = string.gsub(s, '%s+$', '')
+  s = string.gsub(s, '[\n\r]+', ' ')
+  return s
 end
 
 -- Metric printing
@@ -152,6 +163,26 @@ function scraper_network()
   end
 end
 
+function scraper_wifi_clients()
+  local netdevstat = line_split(get_contents("/proc/net/dev"))
+  local client = {}
+  local labels = {}
+  wifi_metric = metric("wifi_client", "gauge")
+  for i, line in ipairs(netdevstat) do
+    if string.match(netdevstat[i], "wlan") then
+      local cmd = ("iwinfo " .. space_split(netdevstat[i])[1]:gsub(":", "") .. " assoclist  |grep ':[0-Z][0-Z]:'|wc -l")
+      client = os.capture(cmd, false)
+      labels['iface'] = space_split(netdevstat[i])[1]:gsub(":", "")
+      wifi_metric(labels, client)
+    end
+  end
+end
+
+function scraper_nat_sessions()
+  local cmd = ("cat /proc/net/nf_conntrack|wc -l")
+  local result = os.capture(cmd, false)
+  metric("nat_sessions", "gauge", nil, result)
+end
 function scraper_network_devices()
   local netdevstat = line_split(get_contents("/proc/net/dev"))
   local netdevsubstat = {"receive_bytes", "receive_packets", "receive_errs",
@@ -172,7 +203,7 @@ function scraper_network_devices()
     end
   end
   for i, ndss in ipairs(netdevsubstat) do
-    netdev_metric = metric("node_network_" .. ndss, "gauge")
+    netdev_metric = metric("node_network_" .. ndss, "counter")
     for ii, d in ipairs(devs) do
       netdev_metric({device=d}, nds_table[d][i])
     end
@@ -220,7 +251,7 @@ function run_all_scrapers()
   local name = "node_exporter_scrape_duration_seconds"
   local duration_metric = metric(name, "summary")
   for i,scraper in ipairs(scrapers) do
-    local labels = {collector=scraper, result="success"} 
+    local labels = {collector=scraper, result="success"}
     duration_metric(labels, times[scraper])
     print_metric(name.."_sum", labels, scrape_time_sums[scraper])
     print_metric(name.."_count", labels, scrape_counts[scraper])
